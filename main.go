@@ -3,7 +3,15 @@ package main
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-gonic/contrib/sessions"
+	"voyager-golang/models"
+	"github.com/astaxie/beego/orm"
 )
+
+func init()  {
+	models.InitDB()
+	orm.Debug = true
+	orm.RunSyncdb("default", false, true)
+}
 
 func Cors() gin.HandlerFunc {
 	return func(c *gin.Context) {
