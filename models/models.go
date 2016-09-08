@@ -18,10 +18,6 @@ func InitDB() {
 	if _, err := os.Stat(_DB_NAME); os.IsNotExist(err) {
 		os.MkdirAll(path.Dir(_DB_NAME), os.ModePerm)
 		os.Create(_DB_NAME)
-
-		if err != nil {
-			panic(err)
-		}
 	}
 
 	orm.RegisterModel(new(Post), new(Comment), new(User))
