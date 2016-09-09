@@ -20,7 +20,7 @@ func InitDB() {
 		os.Create(_DB_NAME)
 	}
 
-	orm.RegisterModel(new(Post), new(Comment), new(User))
+	orm.RegisterModelWithPrefix("voyager_", new(Post), new(Comment), new(User))
 
 	orm.RegisterDriver(_SQL_DRIVER, orm.DRSqlite)
 

@@ -1,6 +1,9 @@
 package models
 
-import "time"
+import (
+	"time"
+	"github.com/astaxie/beego/orm"
+)
 
 type Post struct {
 	Id 	int64
@@ -10,4 +13,16 @@ type Post struct {
 	Status 	string
 	Created time.Time
 	Updated time.Time
+}
+
+func AddPost(post Post) error {
+	o := orm.NewOrm()
+
+	_, err := o.Insert(&post)
+
+	if err == nil {
+		return err
+	}
+
+	return nil
 }

@@ -5,6 +5,7 @@ import (
 	"github.com/gin-gonic/contrib/sessions"
 	"voyager-golang/models"
 	"github.com/astaxie/beego/orm"
+	"voyager-golang/services"
 )
 
 func init()  {
@@ -28,21 +29,20 @@ func main() {
 
 	router.Use(Cors())
 
-	// router setup (dummy data)
-	router.GET("/incr", func(c *gin.Context) {
-		session := sessions.Default(c)
-		var count int
-		v := session.Get("count")
-		if v == nil {
-			count = 0
-		} else {
-			count = v.(int)
-			count += 1
-		}
-		session.Set("count", count)
-		session.Save()
-		c.JSON(200, gin.H{"count": count})
-	})
+	v1 := router.Group("api/v1")
+	{
+		//v1.GET("/posts", Gettings)
+		//v1.GET("/posts/:id", Getting)
+		
+		v1.POST("/posts", services.AddPost)
+		// curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_id\": 5, \"title\": \"First Title\", \"content\": \"Content Field\", \"status\": \"posted\"}" http://localhost:8080/api/v1/posts
+
+		//v1.PUT("/posts/:id", Updating)
+		//v1.DELETE("/posts/:id", Deleting)
+	}
+
+
+	router.Run(":8080")
 
 	router.Run(":8080")
 }
