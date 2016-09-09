@@ -56,26 +56,27 @@ func GetPost(id int64) (*Post, error) {
 }
 
 func UpdatePost(id int64, p Post) error {
-	p.Updated = time.Now()
 	o := orm.NewOrm()
 
-	//post := &Post{Id: id}
+	post := &Post{Id: id}
 
-	//qs := o.QueryTable("voyager_post")
+	if o.Read(post) == nil {
+		post.Title = p.Title
+		post.Content = p.Content
+		post.Status = p.Status
+		post.Updated = time.Now()
+		o.Update(post, "Title", "Content", "Status", "Updated")
+	}
 
-	//qs.Update(&p)
-
-
-	o.Update(&p, "status")
-	//if o.Read(post) == nil {
-	//	post = &p
-	//	if num, err := qs.Update(&post, "status"); err == nil {
-	//		fmt.Println(num)
-	//
-	//		if err != nil {
-	//			return err
-	//		}
-	//	}
-	//}
 	return nil
+}
+
+func DeletePost(id int64) error {
+	o := orm.NewOrm()
+
+	post := &Post{Id: id}
+
+	_, err := o.Delete(post)
+
+	return err
 }

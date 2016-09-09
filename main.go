@@ -43,7 +43,8 @@ func main() {
 		v1.PUT("/posts/:id", services.UpdatePost)
 		// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"status\": \"updated\" }" http://localhost:8080/api/v1/posts/1
 
-		//v1.DELETE("/posts/:id", Deleting)
+		v1.DELETE("/posts/:id", services.DeletePost)
+		// curl -i -X DELETE http://localhost:8080/api/v1/posts/6
 	}
 
 	router.Run(":8080")

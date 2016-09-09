@@ -3,7 +3,6 @@ package services
 import (
 	"github.com/gin-gonic/gin"
 	"voyager-golang/models"
-	"time"
 	"strconv"
 )
 
@@ -61,13 +60,28 @@ func UpdatePost(c *gin.Context) {
 		panic(err)
 	}
 
-	post.Updated = time.Now()
-
 	ret := models.UpdatePost(id, post)
 
 	if ret == nil {
 		c.JSON(201, post)
 	} else {
 		c.JSON(400, gin.H{"error": "bad post input"})
+	}
+}
+
+func DeletePost(c *gin.Context) {
+	sid := c.Params.ByName("id")
+	id, err := strconv.ParseInt(sid, 10, 64)
+
+	if err != nil {
+		panic(err)
+	}
+
+	ret := models.DeletePost(id)
+
+	if ret == nil {
+		c.JSON(200, gin.H{"status": "id # " + sid + " has been deleted"})
+	} else {
+		c.JSON(404, gin.H{"error": "user not found"})
 	}
 }
