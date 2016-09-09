@@ -31,18 +31,20 @@ func main() {
 
 	v1 := router.Group("api/v1")
 	{
-		//v1.GET("/posts", Gettings)
-		//v1.GET("/posts/:id", Getting)
-		
+		v1.GET("/posts", services.GetPosts)
+		// curl -i http://localhost:8080/api/v1/posts
+
+		v1.GET("/posts/:id", services.GetPost)
+		// curl -i http://localhost:8080/api/v1/posts/1
+
 		v1.POST("/posts", services.AddPost)
 		// curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_id\": 5, \"title\": \"First Title\", \"content\": \"Content Field\", \"status\": \"posted\"}" http://localhost:8080/api/v1/posts
 
-		//v1.PUT("/posts/:id", Updating)
+		v1.PUT("/posts/:id", services.UpdatePost)
+		// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"status\": \"updated\" }" http://localhost:8080/api/v1/posts/1
+
 		//v1.DELETE("/posts/:id", Deleting)
 	}
-
-
-	router.Run(":8080")
 
 	router.Run(":8080")
 }
