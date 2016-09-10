@@ -13,7 +13,7 @@ func AddPost(c *gin.Context) {
 	ret := models.AddPost(post)
 
 	if ret == nil {
-		c.JSON(201, post)
+		c.JSON(201, gin.H{"status": "ok" ,"data": post})
 	} else {
 		c.JSON(400, gin.H{"error": "bad post input"})
 	}
@@ -26,7 +26,7 @@ func GetPosts(c *gin.Context) {
 	posts, err := models.GetPosts()
 
 	if err == nil {
-		c.JSON(200, posts)
+		c.JSON(200, gin.H{"status": "ok" ,"data": posts})
 	} else {
 		c.JSON(404, gin.H{"error": "no post(s) in the table"})
 	}
@@ -43,7 +43,7 @@ func GetPost(c *gin.Context) {
 	post, err := models.GetPost(id)
 
 	if err == nil {
-		c.JSON(200, post)
+		c.JSON(200, gin.H{"status": "ok" ,"data": post})
 	} else {
 		c.JSON(404, gin.H{"error": "no post in the table"})
 	}
@@ -63,7 +63,7 @@ func UpdatePost(c *gin.Context) {
 	ret := models.UpdatePost(id, post)
 
 	if ret == nil {
-		c.JSON(201, post)
+		c.JSON(201, gin.H{"status": "ok" ,"data": post})
 	} else {
 		c.JSON(400, gin.H{"error": "bad post input"})
 	}

@@ -36,7 +36,7 @@ func GetPosts() ([]*Post, error)  {
 	posts := make([]*Post, 0)
 
 	qs := o.QueryTable("voyager_post")
-	_, err := qs.All(&posts)
+	_, err := qs.OrderBy("-updated").All(&posts)
 
 	return posts, err
 }
