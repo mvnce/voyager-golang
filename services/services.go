@@ -6,34 +6,32 @@ import (
 	"strconv"
 )
 
-func AddPost(c *gin.Context) {
+func AddPost(context *gin.Context) {
 	var post models.Post
-	c.Bind(&post)
+	context.BindJSON(&post)
 
 	ret := models.AddPost(post)
 
 	if ret == nil {
-		c.JSON(201, gin.H{"status": "ok" ,"data": post})
+		context.JSON(201, gin.H{"status": "ok" ,"data": post})
 	} else {
-		c.JSON(400, gin.H{"error": "bad post input"})
+		context.JSON(400, gin.H{"error": "bad post input"})
 	}
 }
 
 
-func GetPosts(c *gin.Context) {
-	//var posts []models.User
-
+func GetPosts(context *gin.Context) {
 	posts, err := models.GetPosts()
 
 	if err == nil {
-		c.JSON(200, gin.H{"status": "ok" ,"data": posts})
+		context.JSON(200, gin.H{"status": "ok" ,"data": posts})
 	} else {
-		c.JSON(404, gin.H{"error": "no post(s) in the table"})
+		context.JSON(404, gin.H{"error": "no post(s) in the table"})
 	}
 }
 
-func GetPost(c *gin.Context) {
-	sid := c.Params.ByName("id")
+func GetPost(context *gin.Context) {
+	sid := context.Params.ByName("id")
 	id, err := strconv.ParseInt(sid, 10, 64)
 
 	if err != nil {
@@ -43,17 +41,17 @@ func GetPost(c *gin.Context) {
 	post, err := models.GetPost(id)
 
 	if err == nil {
-		c.JSON(200, gin.H{"status": "ok" ,"data": post})
+		context.JSON(200, gin.H{"status": "ok" ,"data": post})
 	} else {
-		c.JSON(404, gin.H{"error": "no post in the table"})
+		context.JSON(404, gin.H{"error": "no post in the table"})
 	}
 }
 
-func UpdatePost(c *gin.Context) {
+func UpdatePost(context *gin.Context) {
 	var post models.Post
-	c.Bind(&post)
+	context.Bind(&post)
 
-	sid := c.Params.ByName("id")
+	sid := context.Params.ByName("id")
 	id, err := strconv.ParseInt(sid, 10, 64)
 
 	if err != nil {
@@ -63,14 +61,14 @@ func UpdatePost(c *gin.Context) {
 	ret := models.UpdatePost(id, post)
 
 	if ret == nil {
-		c.JSON(201, gin.H{"status": "ok" ,"data": post})
+		context.JSON(201, gin.H{"status": "ok" ,"data": post})
 	} else {
-		c.JSON(400, gin.H{"error": "bad post input"})
+		context.JSON(400, gin.H{"error": "bad post input"})
 	}
 }
 
-func DeletePost(c *gin.Context) {
-	sid := c.Params.ByName("id")
+func DeletePost(context *gin.Context) {
+	sid := context.Params.ByName("id")
 	id, err := strconv.ParseInt(sid, 10, 64)
 
 	if err != nil {
@@ -80,8 +78,8 @@ func DeletePost(c *gin.Context) {
 	ret := models.DeletePost(id)
 
 	if ret == nil {
-		c.JSON(200, gin.H{"status": "id # " + sid + " has been deleted"})
+		context.JSON(200, gin.H{"status": "id # " + sid + " has been deleted"})
 	} else {
-		c.JSON(404, gin.H{"error": "user not found"})
+		context.JSON(404, gin.H{"error": "user not found"})
 	}
 }

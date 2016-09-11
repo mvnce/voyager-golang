@@ -3,14 +3,15 @@ package models
 import (
 	"time"
 	"github.com/astaxie/beego/orm"
+	"fmt"
 )
 
 type Post struct {
 	Id 	int64
-	UserId 	int64
-	Title 	string
-	Content string
-	Status 	string
+	UserId 	int64	`json:"user_id" binding:"required"`
+	Title 	string	`json:"title"`
+	Content string	`json:"content"`
+	Status 	string	`json:"status"`
 	Created time.Time
 	Updated time.Time
 }
@@ -20,6 +21,8 @@ func AddPost(p Post) error {
 	p.Updated = time.Now()
 
 	o := orm.NewOrm()
+
+	fmt.Println("post add: ", p)
 
 	_, err := o.Insert(&p)
 
