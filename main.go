@@ -5,7 +5,7 @@ import (
 	"github.com/gin-gonic/contrib/sessions"
 	"voyager-golang/models"
 	"github.com/astaxie/beego/orm"
-	"voyager-golang/services"
+	"voyager-golang/controllers"
 	"fmt"
 )
 
@@ -48,21 +48,24 @@ func main() {
 
 	v1 := router.Group("api/v1")
 	{
-		v1.GET("/posts", services.GetPosts)
-		// 104.131.139.229:8080
-		// curl -i http://104.131.139.229:8080/api/v1/posts
+		post := new(controllers.PostController)
+		v1.GET("/posts", post.GetPosts)
+		v1.GET("/posts/:id", post.GetPost)
+		v1.POST("/posts", post.AddPost)
+		v1.PUT("/posts/:id", post.UpdatePost)
+		v1.DELETE("/posts/:id", post.DeletePost)
 
-		v1.GET("/posts/:id", services.GetPost)
+		// curl -i http://localhost:8080/api/v1/posts
 		// curl -i http://localhost:8080/api/v1/posts/1
-
-		v1.POST("/posts", services.AddPost)
 		// curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_id\": 5, \"title\": \"First Title\", \"content\": \"Content Field\", \"status\": \"posted\"}" http://localhost:8080/api/v1/posts
-
-		v1.PUT("/posts/:id", services.UpdatePost)
 		// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"status\": \"updated\" }" http://localhost:8080/api/v1/posts/1
-
-		v1.DELETE("/posts/:id", services.DeletePost)
 		// curl -i -X DELETE http://localhost:8080/api/v1/posts/6
+
+		user := new(controllers.UserController)
+
+		v1.POST("/user/signin", user.SignIn)
+		v1.POST("/user/signup", user.SignUp)
+		v1.GET("/user/signout", user.SignOut)
 	}
 
 	router.Run(":8080")

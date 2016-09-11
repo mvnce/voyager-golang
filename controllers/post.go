@@ -1,4 +1,4 @@
-package services
+package controllers
 
 import (
 	"github.com/gin-gonic/gin"
@@ -6,7 +6,9 @@ import (
 	"strconv"
 )
 
-func AddPost(context *gin.Context) {
+type PostController struct{}
+
+func (pc PostController) AddPost(context *gin.Context) {
 	var post models.Post
 	context.BindJSON(&post)
 
@@ -20,7 +22,7 @@ func AddPost(context *gin.Context) {
 }
 
 
-func GetPosts(context *gin.Context) {
+func (pc PostController) GetPosts(context *gin.Context) {
 	posts, err := models.GetPosts()
 
 	if err == nil {
@@ -30,7 +32,7 @@ func GetPosts(context *gin.Context) {
 	}
 }
 
-func GetPost(context *gin.Context) {
+func (pc PostController) GetPost(context *gin.Context) {
 	sid := context.Params.ByName("id")
 	id, err := strconv.ParseInt(sid, 10, 64)
 
@@ -47,7 +49,7 @@ func GetPost(context *gin.Context) {
 	}
 }
 
-func UpdatePost(context *gin.Context) {
+func (pc PostController) UpdatePost(context *gin.Context) {
 	var post models.Post
 	context.Bind(&post)
 
@@ -67,7 +69,7 @@ func UpdatePost(context *gin.Context) {
 	}
 }
 
-func DeletePost(context *gin.Context) {
+func (pc PostController) DeletePost(context *gin.Context) {
 	sid := context.Params.ByName("id")
 	id, err := strconv.ParseInt(sid, 10, 64)
 
