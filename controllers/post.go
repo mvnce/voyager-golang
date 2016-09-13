@@ -10,12 +10,12 @@ type PostController struct{}
 
 func (pc PostController) AddPost(context *gin.Context) {
 	var post models.Post
-	context.BindJSON(&post)
+	context.Bind(&post)
 
 	ret := models.AddPost(post)
 
 	if ret == nil {
-		context.JSON(201, gin.H{"status": "ok" ,"data": post})
+		context.JSON(201, gin.H{"message": "ok" ,"data": post})
 	} else {
 		context.JSON(400, gin.H{"error": "bad post input"})
 	}
@@ -26,7 +26,7 @@ func (pc PostController) GetPosts(context *gin.Context) {
 	posts, err := models.GetPosts()
 
 	if err == nil {
-		context.JSON(200, gin.H{"status": "ok" ,"data": posts})
+		context.JSON(200, gin.H{"message": "ok" ,"data": posts})
 	} else {
 		context.JSON(404, gin.H{"error": "no post(s) in the table"})
 	}
@@ -43,7 +43,7 @@ func (pc PostController) GetPost(context *gin.Context) {
 	post, err := models.GetPost(id)
 
 	if err == nil {
-		context.JSON(200, gin.H{"status": "ok" ,"data": post})
+		context.JSON(200, gin.H{"message": "ok" ,"data": post})
 	} else {
 		context.JSON(404, gin.H{"error": "no post in the table"})
 	}
@@ -63,7 +63,7 @@ func (pc PostController) UpdatePost(context *gin.Context) {
 	ret := models.UpdatePost(id, post)
 
 	if ret == nil {
-		context.JSON(201, gin.H{"status": "ok" ,"data": post})
+		context.JSON(201, gin.H{"message": "ok" ,"data": post})
 	} else {
 		context.JSON(400, gin.H{"error": "bad post input"})
 	}
@@ -80,7 +80,7 @@ func (pc PostController) DeletePost(context *gin.Context) {
 	ret := models.DeletePost(id)
 
 	if ret == nil {
-		context.JSON(200, gin.H{"status": "id # " + sid + " has been deleted"})
+		context.JSON(200, gin.H{"message": "id # " + sid + " has been deleted"})
 	} else {
 		context.JSON(404, gin.H{"error": "user not found"})
 	}

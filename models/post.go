@@ -23,11 +23,7 @@ func AddPost(p Post) error {
 
 	_, err := o.Insert(&p)
 
-	if err == nil {
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func GetPosts() ([]*Post, error)  {

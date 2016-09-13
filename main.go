@@ -49,6 +49,7 @@ func main() {
 	v1 := router.Group("api/v1")
 	{
 		post := new(controllers.PostController)
+
 		v1.GET("/posts", post.GetPosts)
 		v1.GET("/posts/:id", post.GetPost)
 		v1.POST("/posts", post.AddPost)
@@ -66,6 +67,15 @@ func main() {
 		v1.POST("/user/signin", user.SignIn)
 		v1.POST("/user/signup", user.SignUp)
 		v1.GET("/user/signout", user.SignOut)
+
+		comment := new(controllers.CommentController)
+
+		v1.POST("/comments", comment.AddComment)
+		v1.GET("/comments/:id", comment.GetComments)
+
+		// curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_id\": 1, \"post_id\": 19, \"content\": \"Content Field\", \"status\": \"new\"}" http://localhost:8080/api/v1/comments
+		// curl -i http://localhost:8080/api/v1/comments/19
+
 	}
 
 	router.Run(":8080")
