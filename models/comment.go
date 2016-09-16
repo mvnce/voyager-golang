@@ -11,8 +11,8 @@ type Comment struct {
 	PostId int64	`json:"post_id"`
 	Content string	`json:"content"`
 	Status string	`json:"status"`
-	Created time.Time
-	Updated time.Time
+	Created time.Time `json:"created"`
+	Updated time.Time `json:"updated"`
 }
 
 func AddComment(comment Comment) error {

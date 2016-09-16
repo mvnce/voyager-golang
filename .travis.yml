@@ -1,0 +1,12 @@
+language: go
+go:
+  - 1.7
+
+install:
+  - go get github.com/gin-gonic/gin
+  - github.com/astaxie/beego
+  - github.com/gin-gonic/contrib/sessions
+  - go get github.com/mattn/go-sqlite3
+
+script:
+  - go build
