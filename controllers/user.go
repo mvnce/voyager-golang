@@ -3,28 +3,17 @@ package controllers
 import (
 	"github.com/gin-gonic/gin"
 	"voyager-golang/models"
-	"github.com/gin-gonic/contrib/sessions"
-	//"strconv"
-	//"voyager-golang/forms"
+	"github.com/dgrijalva/jwt-go"
 	"fmt"
+	"time"
+	"strconv"
+)
+
+const (
+	hmacKey = "Vincent,HmacKey,Sample"
 )
 
 type UserController struct {}
-
-//func getId(context *gin.Context) (id int64, err error) {
-//	session := sessions.Default(context)
-//	sid := session.Get("user_id")
-//
-//	if sid != nil {
-//		id, err = strconv.ParseInt(sid, 10, 64)
-//
-//		if err != nil {
-//			panic(err)
-//		}
-//	}
-//
-//	return id, err
-//}
 
 func (uc UserController) SignUp(context *gin.Context) {
 	fmt.Println("Signup Controller")
@@ -35,21 +24,58 @@ func (uc UserController) SignUp(context *gin.Context) {
 		return
 	}
 
-	ret := models.SignUp(user)
+	ret := models.AddUser(user)
 
 	if ret == nil {
-		session := sessions.Default(context)
-		session.Set("user_id", user.Id)
-		session.Set("user_name", user.Name)
-		session.Save()
-		context.JSON(200, gin.H{"message": "ok", "data": user})
+		expTime := time.Now().Add(time.Minute * 5).Unix()
+
+		token := jwt.NewWithClaims(
+			jwt.SigningMethodHS256,
+			jwt.MapClaims{
+				"userid": user.Id,
+				"exp": expTime,
+
+		})
+
+		tokenStr, err := token.SignedString([]byte(hmacKey))
+
+		if err != nil {
+			return
+		}
+
+		data := map[string]string {
+			"token": tokenStr,
+			"exp": strconv.FormatInt(expTime,10),
+		}
+
+		context.JSON(200, gin.H{"message": "ok", "data": data})
 	} else {
 		context.JSON(406, gin.H{"message": "error", "error": "bad signup"})
 	}
 }
 
-func (uc UserController) SignIn(context *gin.Context) {
-	models.SignIn()
+func (uc UserController) CheckStatus(context *gin.Context) {
+	var tokenModel models.Token
+
+	if context.Bind(&tokenModel) != nil {
+		context.JSON(406, gin.H{"status": "error"})
+		return
+	}
+
+	token, _ := jwt.Parse(tokenModel.Token, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(hmacKey), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println(claims["userid"], claims["exp"])
+
+		context.JSON(200, gin.H{"message": "ok", "data": "validated"})
+	} else {
+		context.JSON(406, gin.H{"message": "error", "error": "check status failed"})
+	}
 }
 
 func (uc UserController) SignOut(context *gin.Context) {

@@ -15,7 +15,11 @@ type User struct {
 	Joined 	time.Time `json:"joined"`
 }
 
-func SignUp(user User) error {
+type Token struct {
+	Token string `json:"token"`
+}
+
+func AddUser(user User) error {
 	user.Joined = time.Now()
 
 	o := orm.NewOrm()
@@ -23,10 +27,6 @@ func SignUp(user User) error {
 	_, err := o.Insert(&user)
 
 	return err
-}
-
-func SignIn() error {
-	return nil
 }
 
 func SignOut() error {
