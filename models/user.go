@@ -29,6 +29,6 @@ func AddUser(user User) error {
 	return err
 }
 
-func SignOut() error {
-	return nil
+func VerifyCredential(user User) bool {
+	return true
 }

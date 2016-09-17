@@ -64,9 +64,9 @@ func main() {
 
 		user := new(controllers.UserController)
 
-		v1.POST("/user/signup", user.SignUp)
-		v1.POST("/user/checkstatus", user.CheckStatus)
-		v1.GET("/user/signout", user.SignOut)
+		v1.POST("/auth/signup", user.SignUp)
+		v1.POST("/auth/signin", user.SignIn)
+		v1.POST("/auth/check", user.Check)
 
 		// curl -i -X POST -H "Content-Type: application/json" -d "{\"name\": \"hello\", \"password\": \"world123\"}" http://localhost:8080/api/v1/user/signup
 		// curl -i -X POST -H "Content-Type: application/json" -d "{\"token\": \"token_sample\"}" http://localhost:8080/api/v1/user/checkstatus
