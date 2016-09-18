@@ -19,16 +19,31 @@ type Token struct {
 	Token string `json:"token"`
 }
 
-func AddUser(user User) error {
+func AddUser(user User) (int64, error) {
 	user.Joined = time.Now()
 
 	o := orm.NewOrm()
 
-	_, err := o.Insert(&user)
+	userId, err := o.Insert(&user)
 
-	return err
+	return userId, err
 }
 
 func VerifyCredential(user User) bool {
-	return true
+	dbUser := new(User)
+
+	o := orm.NewOrm()
+	qs := o.QueryTable("voyager_user")
+
+	err := qs.Filter("email", user.Email).One(dbUser)
+
+	if err != nil {
+		return false
+	}
+
+	if user.Password == dbUser.Password {
+		return true
+	}
+
+	return false
 }

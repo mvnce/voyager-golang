@@ -19,9 +19,9 @@ func (uc UserController) SignUp(context *gin.Context) {
 	var user models.User
 	context.Bind(&user)
 
-	ret := models.AddUser(user)
+	newId, err := models.AddUser(user)
 
-	if ret == nil {
+	if err == nil {
 		expTime := time.Now().Add(time.Minute * 5).Unix()
 
 		token := jwt.NewWithClaims(
@@ -40,7 +40,7 @@ func (uc UserController) SignUp(context *gin.Context) {
 
 		data := map[string]string {
 			"token": tokenStr,
-			"exp": strconv.FormatInt(expTime,10),
+			"id": strconv.FormatInt(newId, 10),
 		}
 
 		context.JSON(200, gin.H{"message": "ok", "data": data})
@@ -75,12 +75,14 @@ func (uc UserController) SignIn(context *gin.Context) {
 
 		data := map[string]string {
 			"token": tokenStr,
-			"exp": strconv.FormatInt(expTime,10),
+			"exp": strconv.FormatInt(expTime, 10),
 		}
 
 		context.JSON(200, gin.H{"message": "ok", "data": data})
 	} else {
-		context.JSON(406, gin.H{"message": "error", "error": "bad signup"})
+
+		data := map[string]string {}
+		context.JSON(200, gin.H{"message": "authentication failed", "data": data})
 	}
 }
 
