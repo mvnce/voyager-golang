@@ -26,15 +26,18 @@ func AddPost(p Post) error {
 	return err
 }
 
-func GetPosts() ([]*Post, error)  {
+func GetPosts() []orm.Params  {
 	o := orm.NewOrm()
 
-	posts := make([]*Post, 0)
+	//var posts []Post
 
-	qs := o.QueryTable("voyager_post")
-	_, err := qs.OrderBy("-updated").All(&posts)
+	var maps []orm.Params
+	o.Raw("SELECT post.id, user.name, post.title, post.content, post.updated, COUNT(comment.id) AS total_comments FROM voyager_post AS post INNER JOIN voyager_user as user ON post.user_id=user.id LEFT JOIN voyager_comment as comment ON post.id=comment.post_id GROUP BY post.id;").Values(&maps)
+	//
+	//qs := o.QueryTable("voyager_post")
+	//_, err := qs.OrderBy("-updated").All(&posts)
 
-	return posts, err
+	return maps
 }
 
 func GetPost(id int64) (*Post, error) {

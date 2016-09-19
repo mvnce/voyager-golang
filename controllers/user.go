@@ -22,7 +22,7 @@ func (uc UserController) SignUp(context *gin.Context) {
 	newId, err := models.AddUser(user)
 
 	if err == nil {
-		expTime := time.Now().Add(time.Minute * 5).Unix()
+		expTime := time.Now().Add(time.Minute * 30).Unix()
 
 		token := jwt.NewWithClaims(
 			jwt.SigningMethodHS256,
@@ -57,7 +57,7 @@ func (uc UserController) SignIn(context *gin.Context) {
 	ret := models.VerifyCredential(user)
 
 	if ret {
-		expTime := time.Now().Add(time.Minute * 5).Unix()
+		expTime := time.Now().Add(time.Minute * 30).Unix()
 
 		token := jwt.NewWithClaims(
 			jwt.SigningMethodHS256,
@@ -80,17 +80,16 @@ func (uc UserController) SignIn(context *gin.Context) {
 
 		context.JSON(200, gin.H{"message": "ok", "data": data})
 	} else {
-
-		data := map[string]string {}
-		context.JSON(200, gin.H{"message": "authentication failed", "data": data})
+		context.JSON(200, gin.H{"message": "authentication failed", "data": map[string]string {}})
 	}
 }
 
+// check freshness of current token
 func (uc UserController) Check(context *gin.Context) {
 	var tokenModel models.Token
 
 	if context.Bind(&tokenModel) != nil {
-		context.JSON(406, gin.H{"status": "error"})
+		context.JSON(401, gin.H{"message": "can not bind token to model"})
 		return
 	}
 
@@ -103,9 +102,27 @@ func (uc UserController) Check(context *gin.Context) {
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
 		fmt.Println(claims["userid"], claims["exp"])
+		fmt.Println("check user claims")
 
-		context.JSON(200, gin.H{"message": "ok", "data": "validated"})
+		expTime := time.Now().Add(time.Minute * 30).Unix()
+
+		token := jwt.NewWithClaims(
+			jwt.SigningMethodHS256,
+			jwt.MapClaims{
+				"exp": expTime,
+			})
+
+		tokenStr, err := token.SignedString([]byte(hmacKey))
+
+		if err != nil {
+			return
+		}
+		data := map[string]string {
+			"token": tokenStr,
+			"exp": strconv.FormatInt(expTime, 10),
+		}
+		context.JSON(200, gin.H{"message": "ok", "data": data})
 	} else {
-		context.JSON(406, gin.H{"message": "error", "error": "check status failed"})
+		context.JSON(200, gin.H{"message": "checked failed", "data": map[string]string {}})
 	}
 }

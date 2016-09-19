@@ -23,13 +23,9 @@ func (pc PostController) AddPost(context *gin.Context) {
 
 
 func (pc PostController) GetPosts(context *gin.Context) {
-	posts, err := models.GetPosts()
+	posts := models.GetPosts()
 
-	if err == nil {
-		context.JSON(200, gin.H{"message": "ok" ,"data": posts})
-	} else {
-		context.JSON(404, gin.H{"error": "no post(s) in the table"})
-	}
+	context.JSON(200, gin.H{"message": "ok" ,"data": posts})
 }
 
 func (pc PostController) GetPost(context *gin.Context) {
