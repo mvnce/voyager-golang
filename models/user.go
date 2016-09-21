@@ -24,12 +24,10 @@ func AddUser(user User) (int64, error) {
 
 	o := orm.NewOrm()
 
-	userId, err := o.Insert(&user)
-
-	return userId, err
+	return o.Insert(&user)
 }
 
-func VerifyCredential(user User) bool {
+func VerifyCredential(user User) int64 {
 	dbUser := new(User)
 
 	o := orm.NewOrm()
@@ -38,12 +36,12 @@ func VerifyCredential(user User) bool {
 	err := qs.Filter("email", user.Email).One(dbUser)
 
 	if err != nil {
-		return false
+		return 0
 	}
 
 	if user.Password == dbUser.Password {
-		return true
+		return dbUser.Id
 	}
 
-	return false
+	return 0
 }

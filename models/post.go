@@ -44,18 +44,19 @@ func GetPosts() []orm.Params  {
 	return maps
 }
 
-func GetPost(id int64) (*Post, error) {
+func GetPost(id int64) ([]orm.Params, int64) {
 	o := orm.NewOrm()
-
-	post := new(Post)
-
-	qs := o.QueryTable("voyager_post")
-	err := qs.Filter("id", id).One(post)
+	var maps []orm.Params
+	var query = `
+		SELECT * FROM voyager_post AS post
+		WHERE  post.id=?
+	`
+	num, err := o.Raw(query, id).Values(&maps)
 	if err != nil {
-		return nil, err
+		panic(err)
 	}
 
-	return post, nil
+	return maps, num
 }
 
 func UpdatePost(id int64, p Post) error {

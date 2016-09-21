@@ -5,52 +5,68 @@ import (
 	"voyager-golang/models"
 	"strconv"
 	"strings"
-	"fmt"
 )
 
 type PostController struct{}
 
 func (pc PostController) AddPost(context *gin.Context) {
 	var post models.Post
-	context.Bind(&post)
+	var authHeader = context.Request.Header.Get("Authorization")
+	var tokens = strings.Split(authHeader, " ")
+	var userId = GetUserId(string(tokens[1]))
 
-	ret := models.AddPost(post)
+	if userId > 0 {
+		context.Bind(&post)
+		post.UserId = userId
 
-	if ret == nil {
-		context.JSON(201, gin.H{"message": "ok" ,"data": post})
+		ret := models.AddPost(post)
+
+		if ret == nil {
+			context.JSON(201, gin.H{"message": "ok", "data": post})
+		} else {
+			context.JSON(400, gin.H{"error": "bad post input"})
+		}
 	} else {
-		context.JSON(400, gin.H{"error": "bad post input"})
+		context.JSON(401, gin.H{"message": "authentication failed"})
 	}
+
+
+
+
 }
 
 
 func (pc PostController) GetPosts(context *gin.Context) {
 	var authHeader = context.Request.Header.Get("Authorization")
 	var tokens = strings.Split(authHeader, " ")
-	fmt.Println(tokens)
-	posts := models.GetPosts()
 
 	if CheckToken(string(tokens[1])) {
-		context.JSON(200, gin.H{"message": "ok" ,"data": posts})
+		posts := models.GetPosts()
+		context.JSON(200, gin.H{" message": "ok" ,"data": posts })
 	} else {
-		context.JSON(401, gin.H{"message": "Unauthorized"})
+		context.JSON(401, gin.H{" message": "Unauthorized" })
 	}
 }
 
 func (pc PostController) GetPost(context *gin.Context) {
 	sid := context.Params.ByName("id")
 	id, err := strconv.ParseInt(sid, 10, 64)
-
 	if err != nil {
 		panic(err)
 	}
 
-	post, err := models.GetPost(id)
+	var authHeader = context.Request.Header.Get("Authorization")
+	var tokens = strings.Split(authHeader, " ")
 
-	if err == nil {
-		context.JSON(200, gin.H{"message": "ok" ,"data": post})
+	if CheckToken(string(tokens[1])) {
+		post, num := models.GetPost(id)
+		if num > 0 {
+			context.JSON(200, gin.H{ "message": "ok" ,"data": post[0] })
+		} else {
+			context.JSON(401, gin.H{" message": "error" })
+		}
 	} else {
-		context.JSON(404, gin.H{"error": "no post in the table"})
+		context.JSON(401, gin.H{" message": "Unauthorized" })
 	}
 }
 

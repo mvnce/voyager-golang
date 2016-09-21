@@ -68,7 +68,6 @@ func main() {
 
 		v1.POST("/auth/signup", user.SignUp)
 		v1.POST("/auth/signin", user.SignIn)
-		v1.POST("/auth/check", user.Check)
 
 		// curl -i -X POST -H "Content-Type: application/json" -d "{\"email\": \"facebowl\", \"password\": \"facebowl\"}" http://localhost:8080/api/v1/auth/signup
 		// curl -i -X POST -H "Content-Type: application/json" -d "{\"token\": \"token_sample\"}" http://localhost:8080/api/v1/user/checkstatus
