@@ -4,6 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 	"voyager-golang/models"
 	"strconv"
+	"strings"
+	"fmt"
 )
 
 type PostController struct{}
@@ -23,9 +25,16 @@ func (pc PostController) AddPost(context *gin.Context) {
 
 
 func (pc PostController) GetPosts(context *gin.Context) {
+	var authHeader = context.Request.Header.Get("Authorization")
+	var tokens = strings.Split(authHeader, " ")
+	fmt.Println(tokens)
 	posts := models.GetPosts()
 
-	context.JSON(200, gin.H{"message": "ok" ,"data": posts})
+	if CheckToken(string(tokens[1])) {
+		context.JSON(200, gin.H{"message": "ok" ,"data": posts})
+	} else {
+		context.JSON(401, gin.H{"message": "Unauthorized"})
+	}
 }
 
 func (pc PostController) GetPost(context *gin.Context) {

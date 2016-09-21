@@ -57,6 +57,8 @@ func main() {
 		v1.DELETE("/posts/:id", post.DeletePost)
 
 		// curl -i http://localhost:8080/api/v1/posts
+		// http -f GET http://localhost:8080/api/v1/posts "Authorization:Bearer xxxxxxxxx"  "Content-Type: application/json"
+
 		// curl -i http://localhost:8080/api/v1/posts/1
 		// curl -i -X POST -H "Content-Type: application/json" -d "{ \"user_id\": 5, \"title\": \"First Title\", \"content\": \"Content Field\", \"status\": \"posted\"}" http://localhost:8080/api/v1/posts
 		// curl -i -X PUT -H "Content-Type: application/json" -d "{ \"status\": \"updated\" }" http://localhost:8080/api/v1/posts/1
@@ -68,7 +70,7 @@ func main() {
 		v1.POST("/auth/signin", user.SignIn)
 		v1.POST("/auth/check", user.Check)
 
-		// curl -i -X POST -H "Content-Type: application/json" -d "{\"name\": \"hello\", \"password\": \"world123\"}" http://localhost:8080/api/v1/user/signup
+		// curl -i -X POST -H "Content-Type: application/json" -d "{\"email\": \"facebowl\", \"password\": \"facebowl\"}" http://localhost:8080/api/v1/auth/signup
 		// curl -i -X POST -H "Content-Type: application/json" -d "{\"token\": \"token_sample\"}" http://localhost:8080/api/v1/user/checkstatus
 
 

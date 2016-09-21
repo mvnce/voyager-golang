@@ -126,3 +126,23 @@ func (uc UserController) Check(context *gin.Context) {
 		context.JSON(200, gin.H{"message": "checked failed", "data": map[string]string {}})
 	}
 }
+
+// check freshness of current token
+func CheckToken(tk string) bool {
+
+	token, _ := jwt.Parse(tk, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
+		}
+		return []byte(hmacKey), nil
+	})
+
+	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
+		fmt.Println(claims["userid"], claims["exp"])
+		fmt.Println("check user claims")
+
+		return true;
+	} else {
+		return false;
+	}
+}
