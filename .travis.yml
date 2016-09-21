@@ -8,5 +8,8 @@ install:
   - go get github.com/gin-gonic/contrib/sessions
   - go get github.com/mattn/go-sqlite3
 
+  - export GOPATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace:$GOPATH"
+  - export PATH="${TRAVIS_BUILD_DIR}/Godeps/_workspace/bin:$PATH"
+
 script:
   - go build
