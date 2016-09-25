@@ -7,7 +7,7 @@ import (
 
 type Post struct {
 	Id 	int64 `json:"id"`
-	UserId 	int64	`json:"user_id" binding:"required"`
+	UserId 	int64	`json:"user_id"`
 	Title 	string	`json:"title"`
 	Content string	`json:"content"`
 	Status 	string	`json:"status"`

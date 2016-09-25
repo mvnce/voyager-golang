@@ -16,7 +16,10 @@ func (pc PostController) AddPost(context *gin.Context) {
 	var userId = GetUserId(string(tokens[1]))
 
 	if userId > 0 {
-		context.Bind(&post)
+		err := context.BindJSON(&post)
+		if err != nil {
+			panic(err)
+		}
 		post.UserId = userId
 
 		ret := models.AddPost(post)
