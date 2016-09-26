@@ -31,7 +31,7 @@ func (uc UserController) SignUp(context *gin.Context) {
 			userId,
 			user.Email,
 			jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(time.Minute * 2).Unix(),
+				ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
 				Issuer:    "test",
 			},
 		}
@@ -61,7 +61,7 @@ func (uc UserController) SignIn(context *gin.Context) {
 			userId,
 			user.Email,
 			jwt.StandardClaims{
-				ExpiresAt: time.Now().Add(time.Minute * 2).Unix(),
+				ExpiresAt: time.Now().Add(time.Minute * 15).Unix(),
 				Issuer:    "test",
 			},
 		}

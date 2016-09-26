@@ -53,7 +53,7 @@ func (pc PostController) GetPosts(context *gin.Context) {
 
 func (pc PostController) GetPost(context *gin.Context) {
 	sid := context.Params.ByName("id")
-	id, err := strconv.ParseInt(sid, 10, 64)
+	pid, err := strconv.ParseInt(sid, 10, 64)
 	if err != nil {
 		panic(err)
 	}
@@ -61,10 +61,22 @@ func (pc PostController) GetPost(context *gin.Context) {
 	var authHeader = context.Request.Header.Get("Authorization")
 	var tokens = strings.Split(authHeader, " ")
 
-	if CheckToken(string(tokens[1])) {
-		post, num := models.GetPost(id)
-		if num > 0 {
-			context.JSON(200, gin.H{ "message": "ok" ,"data": post[0] })
+	var userId = GetUserId(string(tokens[1]))
+
+	if userId > 0 {
+		post, cnt := models.GetPost(pid)
+
+		if cnt > 0 {
+			var post = post[0]
+
+			uid, err := strconv.ParseInt(post["user_id"].(string), 10, 64)
+			if err != nil {
+				panic(err)
+			}
+			if uid == userId {
+				post["is_author"] = true;
+			}
+			context.JSON(200, gin.H{ "message": "ok" ,"data": post })
 		} else {
 			context.JSON(401, gin.H{" message": "error" })
 		}

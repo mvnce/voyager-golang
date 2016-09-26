@@ -44,19 +44,19 @@ func GetPosts() []orm.Params  {
 	return maps
 }
 
-func GetPost(id int64) ([]orm.Params, int64) {
+func GetPost(pid int64) ([]orm.Params, int64) {
 	o := orm.NewOrm()
 	var maps []orm.Params
 	var query = `
 		SELECT * FROM voyager_post AS post
-		WHERE  post.id=?
+		WHERE post.id=?
 	`
-	num, err := o.Raw(query, id).Values(&maps)
+	cnt, err := o.Raw(query, pid).Values(&maps)
 	if err != nil {
 		panic(err)
 	}
 
-	return maps, num
+	return maps, cnt
 }
 
 func UpdatePost(id int64, p Post) error {
