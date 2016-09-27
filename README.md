@@ -12,6 +12,25 @@ Providing RESTful APIs for Voyager blog web application
 - Testing
 - ...
 
-working on authentication middleware and user module
+#Examples
+###Sign Up
+`curl -i -X POST -H "Content-Type: application/json" -d "{\"email\": \"admin@domain.com\", \"password\": \"admin\"}" http://localhost:8080/api/v1/auth/signup`
+###Sign In
+`curl -i -X POST -H "Content-Type: application/json" -d "{\"email\": \"galao@gmail.com\", \"password\": \"galao\"}" http://localhost:8080/api/v1/auth/signin`
+###Validate Token
+`curl -H "Authorization: Bearer x.x.x" http://localhost:8080/api/v1/auth/validate`
+
+###Get Posts
+`http -f GET http://localhost:8080/api/v1/posts "Authorization:Bearer foo.bar.zoo"  "Content-Type: application/json"`
+###Get Post
+`http -f GET http://localhost:8080/api/v1/post/:id "Authorization:Bearer foo.bar.zoo" "Content-Type: application/json"`
+###Add Post
+`N/A`
+###Delete Post
+`N/A`
+###Update Post
+`N/A`
+
+
 
 -Vincent
