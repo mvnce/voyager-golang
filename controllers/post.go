@@ -40,15 +40,7 @@ func (pc PostController) AddPost(context *gin.Context) {
 
 
 func (pc PostController) GetPosts(context *gin.Context) {
-	var authHeader = context.Request.Header.Get("Authorization")
-	var tokens = strings.Split(authHeader, " ")
-
-	if CheckToken(string(tokens[1])) {
-		posts := models.GetPosts()
-		context.JSON(200, gin.H{" message": "ok" ,"data": posts })
-	} else {
-		context.JSON(401, gin.H{" message": "Unauthorized" })
-	}
+	context.JSON(200, gin.H{" message": "ok" ,"data": models.GetPosts() })
 }
 
 func (pc PostController) GetPost(context *gin.Context) {
@@ -58,30 +50,14 @@ func (pc PostController) GetPost(context *gin.Context) {
 		panic(err)
 	}
 
-	var authHeader = context.Request.Header.Get("Authorization")
-	var tokens = strings.Split(authHeader, " ")
+	post, cnt := models.GetPost(pid)
 
-	var userId = GetUserId(string(tokens[1]))
+	if cnt > 0 {
+		var post = post[0]
 
-	if userId > 0 {
-		post, cnt := models.GetPost(pid)
-
-		if cnt > 0 {
-			var post = post[0]
-
-			uid, err := strconv.ParseInt(post["user_id"].(string), 10, 64)
-			if err != nil {
-				panic(err)
-			}
-			if uid == userId {
-				post["is_author"] = true;
-			}
-			context.JSON(200, gin.H{ "message": "ok" ,"data": post })
-		} else {
-			context.JSON(401, gin.H{" message": "error" })
-		}
+		context.JSON(200, gin.H{ "message": "ok" ,"data": post })
 	} else {
-		context.JSON(401, gin.H{" message": "Unauthorized" })
+		context.JSON(401, gin.H{" message": "error" })
 	}
 }
 
